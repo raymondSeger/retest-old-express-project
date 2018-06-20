@@ -7,6 +7,7 @@ const vhost             = require('vhost');
 const compression       = require('compression');
 const helmet            = require('helmet');
 const session           = require('express-session');
+const cookieParser      = require('cookie-parser');
 const app               = express();
 
 
@@ -38,6 +39,7 @@ app.use(vhost('*.testexpressdev.com', function handle (req, res, next) {
 app.use(compression({'level': 9}));
 app.use(helmet());
 app.use(session({ secret: 'the_secret_key', cookie: { maxAge: 60000 }}));
+app.use(cookieParser('the_secret_key_for_browser_cookie', {}));
 
 // Routes 1
 app.get('/', function(req, res) {
@@ -55,6 +57,15 @@ app.get('/session-data', function(req, res) {
         req.session.views = 1;
         res.send('Hello World from session-data!');
     }
+});
+app.get('/get-cookie-data-with-cookie-parser', function(req, res) {
+    // Cookies that have not been signed
+    if(req.cookies.views_browser == undefined) {
+        req.cookies.views_browser    = 1;
+    }
+    res.setHeader('Content-Type', 'text/html');
+    res.write('<p>views: ' + req.cookies.views_browser + '</p>');
+    res.end();
 });
 
 app.get('/users/:userId/:bookId', function (req, res) {
