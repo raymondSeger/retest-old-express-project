@@ -1,11 +1,11 @@
 var express = require('express');
-var path   = require('path');
+var path    = require('path');
 var router = express.Router();
 
-// middleware that is specific to this router
+// middleware that is specific to this router / Router Middleware
 router.use(function timeLog (req, res, next) {
     console.log('Time: ', Date.now());
-    next()
+    next();
 });
 
 // define the home page route

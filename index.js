@@ -4,6 +4,7 @@ const routes1           = require('./routes/routes1');
 const my_middleware1    = require('./middlewares/my-middleware1.js');
 const app               = express();
 
+
 var myLoggerMiddleware = function (req, res, next) {
     console.log('LOGGED');
     next();
@@ -13,6 +14,7 @@ var myURLDeciderMiddleware = function (req, res, next) {
     next();
 };
 
+// App middlewares
 app.use(myLoggerMiddleware);
 app.use(myURLDeciderMiddleware);
 app.use(my_middleware1({
@@ -20,6 +22,7 @@ app.use(my_middleware1({
     option2: '2'
 }));
 
+// Routes 1
 app.get('/', function(req, res) {
     res.send('Hello World!');
 });
@@ -28,6 +31,7 @@ app.get('/users/:userId/:bookId', function (req, res) {
     res.send(req.params)
 });
 
+// use Router (Routes 2)
 app.use(routes1);
 
 app.listen(3000, function() {
