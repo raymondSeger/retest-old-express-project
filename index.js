@@ -6,6 +6,7 @@ const responseTime      = require('response-time');
 const vhost             = require('vhost');
 const compression       = require('compression');
 const helmet            = require('helmet');
+const session           = require('express-session');
 const app               = express();
 
 
@@ -36,10 +37,24 @@ app.use(vhost('*.testexpressdev.com', function handle (req, res, next) {
 }));
 app.use(compression({'level': 9}));
 app.use(helmet());
+app.use(session({ secret: 'the_secret_key', cookie: { maxAge: 60000 }}));
 
 // Routes 1
 app.get('/', function(req, res) {
     res.send('Hello World!');
+});
+app.get('/session-data', function(req, res) {
+    if (req.session.views) {
+        req.session.views   = req.session.views + 1;
+        let total_view      = req.session.views;
+        res.setHeader('Content-Type', 'text/html');
+        res.write('<p>views: ' + req.session.views + '</p>');
+        res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>');
+        res.end();
+    } else {
+        req.session.views = 1;
+        res.send('Hello World from session-data!');
+    }
 });
 
 app.get('/users/:userId/:bookId', function (req, res) {
