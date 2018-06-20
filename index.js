@@ -4,6 +4,7 @@ const routes1           = require('./routes/routes1');
 const my_middleware1    = require('./middlewares/my-middleware1.js');
 const responseTime      = require('response-time');
 const vhost             = require('vhost');
+const compression       = require('compression');
 const app               = express();
 
 
@@ -31,7 +32,8 @@ app.use(vhost('*.testexpressdev.com', function handle (req, res, next) {
     console.dir(req.vhost.length); // => 2
     console.dir(req.vhost[0]); // => 'testsubdomain'
     console.dir(req.vhost[1]); // => undefined
-}))
+}));
+app.use(compression({'level': 9}));
 
 // Routes 1
 app.get('/', function(req, res) {
