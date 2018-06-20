@@ -8,6 +8,8 @@ const compression       = require('compression');
 const helmet            = require('helmet');
 const session           = require('express-session');
 const cookieParser      = require('cookie-parser');
+const multer            = require('multer');
+const upload            = multer();
 const app               = express();
 
 
@@ -67,6 +69,12 @@ app.get('/get-cookie-data-with-cookie-parser', function(req, res) {
     res.cookie('set_new_cookie', 123, { maxAge: 900000, httpOnly: false });
     res.write('<p>views: ' + req.cookies.views_browser + '</p>');
     res.end();
+});
+
+// get "form-data" with multer
+app.post('/get-form-data', upload.array(), function(req, res){
+    console.log(req.body);
+    res.send('Got your data!');
 });
 
 app.get('/users/:userId/:bookId', function (req, res) {
