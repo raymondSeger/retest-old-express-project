@@ -2,6 +2,7 @@ const express           = require('express');
 const library1          = require('./libraries/library1');
 const routes1           = require('./routes/routes1');
 const my_middleware1    = require('./middlewares/my-middleware1.js');
+const responseTime      = require('response-time');
 const app               = express();
 
 
@@ -21,6 +22,7 @@ app.use(my_middleware1({
     option1: '1',
     option2: '2'
 }));
+app.use(responseTime());
 
 // Routes 1
 app.get('/', function(req, res) {
@@ -33,6 +35,8 @@ app.get('/users/:userId/:bookId', function (req, res) {
 
 // use Router (Routes 2)
 app.use(routes1);
+
+
 
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!');
