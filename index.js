@@ -1,7 +1,24 @@
-const express   = require('express');
-const library1  = require('./libraries/library1');
-const routes1  = require('./routes/routes1');
-const app       = express();
+const express           = require('express');
+const library1          = require('./libraries/library1');
+const routes1           = require('./routes/routes1');
+const my_middleware1    = require('./middlewares/my-middleware1.js');
+const app               = express();
+
+var myLoggerMiddleware = function (req, res, next) {
+    console.log('LOGGED');
+    next();
+};
+var myURLDeciderMiddleware = function (req, res, next) {
+    console.log('check the req.url and redirect to correct server');
+    next();
+};
+
+app.use(myLoggerMiddleware);
+app.use(myURLDeciderMiddleware);
+app.use(my_middleware1({
+    option1: '1',
+    option2: '2'
+}));
 
 app.get('/', function(req, res) {
     res.send('Hello World!');
