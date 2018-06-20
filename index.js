@@ -10,6 +10,7 @@ const session           = require('express-session');
 const cookieParser      = require('cookie-parser');
 const multer            = require('multer');
 const upload            = multer();
+const bodyParser        = require('body-parser');
 const app               = express();
 
 
@@ -42,6 +43,8 @@ app.use(compression({'level': 9}));
 app.use(helmet());
 app.use(session({ secret: 'the_secret_key', cookie: { maxAge: 60000 }}));
 app.use(cookieParser('the_secret_key_for_browser_cookie', {}));
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 // Routes 1
 app.get('/', function(req, res) {
@@ -73,6 +76,12 @@ app.get('/get-cookie-data-with-cookie-parser', function(req, res) {
 
 // get "form-data" with multer
 app.post('/get-form-data', upload.array(), function(req, res){
+    console.log(req.body);
+    res.send('Got your data!');
+});
+
+// get "x-www-form-urlencoded" data with body-parser
+app.post('/get-form-data-2', function(req, res) {
     console.log(req.body);
     res.send('Got your data!');
 });
