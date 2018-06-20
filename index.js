@@ -64,6 +64,7 @@ app.get('/get-cookie-data-with-cookie-parser', function(req, res) {
         req.cookies.views_browser    = 1;
     }
     res.setHeader('Content-Type', 'text/html');
+    res.cookie('set_new_cookie', 123, { maxAge: 900000, httpOnly: false });
     res.write('<p>views: ' + req.cookies.views_browser + '</p>');
     res.end();
 });
