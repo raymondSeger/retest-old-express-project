@@ -15,6 +15,12 @@ const redis             = require('redis');
 const client            = redis.createClient(6379, 'localhost');
 const RedisStore        = require('connect-redis')(session);
 const app               = express();
+const http              = require('http').Server(app);
+const io                = require('socket.io')(http);
+
+io.on('connection', function(socket){
+    console.log('a user connected');
+});
 
 
 var myLoggerMiddleware = function (req, res, next) {
@@ -59,6 +65,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.get('/', function(req, res) {
     res.send('Hello World!');
 });
+
+app.get('/socketio', function(req, res) {
+    res.sendFile(__dirname + '/socketio.html');
+});
+
 app.get('/session-data', function(req, res) {
     if (req.session.views) {
         req.session.views   = req.session.views + 1;
@@ -114,8 +125,6 @@ app.get('/users/:userId/:bookId', function (req, res) {
 // use Router (Routes 2)
 app.use(routes1);
 
-
-
-app.listen(3000, function() {
+http.listen(3000, function() {
     console.log('Example app listening on port 3000!');
 });
