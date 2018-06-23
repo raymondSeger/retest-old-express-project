@@ -83,6 +83,18 @@ app.get('/get-cookie-data-with-cookie-parser', function(req, res) {
     res.end();
 });
 
+app.get('/set-redis-data', function(req, res) {
+    client.set("some key", "some val");
+    client.set(["some other key", "some val"]);
+
+    client.get("some key", function(err, reply) {
+        // reply is null when the key is missing
+        console.log(reply);
+    });
+
+    res.send('Hello World!');
+});
+
 // get "form-data" with multer
 app.post('/get-form-data', upload.array(), function(req, res){
     console.log(req.body);
