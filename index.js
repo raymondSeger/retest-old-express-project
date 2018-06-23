@@ -11,6 +11,9 @@ const cookieParser      = require('cookie-parser');
 const multer            = require('multer');
 const upload            = multer();
 const bodyParser        = require('body-parser');
+const redis             = require('redis');
+const client            = redis.createClient(6379, 'localhost');
+const RedisStore        = require('connect-redis')(session);
 const app               = express();
 
 
@@ -41,7 +44,13 @@ app.use(vhost('*.testexpressdev.com', function handle (req, res, next) {
 }));
 app.use(compression({'level': 9}));
 app.use(helmet());
-app.use(session({ secret: 'the_secret_key', cookie: { maxAge: 60000 }}));
+app.use(session({
+    store: new RedisStore({
+        'client': client,
+    }),
+    secret: 'keyboard cat',
+    resave: false
+}));
 app.use(cookieParser('the_secret_key_for_browser_cookie', {}));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
